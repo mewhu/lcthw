@@ -33,5 +33,6 @@ int lowercase(const char *msg)
 
 int fail_on_purpose(const char *msg)
 {
+  if(msg){};
   return 1;
 }
