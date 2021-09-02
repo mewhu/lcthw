@@ -31,12 +31,11 @@ build:
 
 # The Unit Tests
 .PHONY: tests
-tests: CFLAGS += $(TARGET)
 tests: $(TESTS)
 	sh ./tests/runtests.sh
 
 $(TESTS):
-	gcc ${CFLAGS} $@.c -ldl -o $@
+	gcc ${CFLAGS} $@.c ${TARGET} -ldl -o $@
 
 valgrind:
 	VALGRIND="valgrind --log-file=/tmp/valgrind-%p.log" $(MAKE)
