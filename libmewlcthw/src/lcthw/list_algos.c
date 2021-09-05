@@ -49,6 +49,32 @@ void swap_list_node_with_its_next(List *list, ListNode *cur) {
 }
 
 int List_bubble_sort(List *list, List_compare cmp) {
+  if(list->count < 2) {
+    return 0;
+  }
+
+  int is_sorted;
+  do {
+    is_sorted = 1;
+    LIST_FOREACH(list, first, next, cur) {
+      if(cur->next) {
+        if(cmp(cur->value, cur->next->value) > 0) {
+          swap_list_node_with_its_next(list, cur);
+          _node = cur->prev;
+          is_sorted = 0;
+        }
+      }
+    }
+  } while (!is_sorted);
+
+  return 0;
+  check(1==1, "system crash");
+error:
+  return -1;
+}
+
+/*
+int List_bubble_sort(List *list, List_compare cmp) {
   LIST_FOREACH(list, first, next, cur) {
     debug("cur->value: %s , with node position:%p\n", (char *)cur->value, cur);
   }
@@ -104,4 +130,65 @@ int List_bubble_sort(List *list, List_compare cmp) {
   return 0;
 error:;
   return -1;
+}
+*/
+
+
+List *List_merge(List *list_left, List *list_right, List_compare cmp) {
+  List *res = List_create();
+  ListNode *left_one = list_left->first;
+  ListNode *right_one = list_right->first;
+  int target_size = list_left->count + list_right->count;
+  while( res->count < target_size ) {
+    if(!left_one) {
+      List_push(res, right_one->value);
+      right_one = right_one->next;
+    } else if (!right_one) {
+      List_push(res, left_one->value);
+      left_one = left_one->next;
+    } else {
+      if(cmp(left_one->value,right_one->value) <= 0) {
+        List_push(res, left_one->value);
+        left_one = left_one->next;
+      } else {
+        List_push(res, right_one->value);
+        right_one = right_one->next;
+      }
+    }
+  }
+
+  return res;
+}
+
+List *List_merge_sort(List *list, List_compare cmp) {
+  int target_count = list->count;
+  List* res = NULL;
+  if(target_count < 2) {
+    return list;
+  }
+
+  List *list_left = List_create();
+  List *list_right = List_create();
+  int middle = target_count / 2;
+  LIST_FOREACH(list, first, next, cur) {
+    if(list_left->count < middle) {
+      List_push(list_left, cur->value);
+    } else {
+      List_push(list_right, cur->value);
+    }
+  }
+
+  List *sorted_left = List_merge_sort(list_left, cmp);
+  List *sorted_right = List_merge_sort(list_right, cmp);
+  if(sorted_left != list_left)  List_destroy(list_left);
+  if(sorted_right != list_right)  List_destroy(list_right);
+
+  res = List_merge(sorted_left, sorted_right, cmp);
+  List_destroy(sorted_left);
+  List_destroy(sorted_right);
+
+  check(res != NULL, "failed to merge sort");
+  return res;
+error:
+  return NULL;
 }

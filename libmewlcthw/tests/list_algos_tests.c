@@ -47,7 +47,7 @@ char *test_bubble_sort()
   List_destroy(words);
   return NULL;
 }
-/*
+
 char *test_merge_sort()
 {
   List *words = create_words();
@@ -61,13 +61,12 @@ char *test_merge_sort()
   List_destroy(words);
   return NULL;
 }
-*/
 
 char *all_tests()
 {
   mu_suite_start();
   mu_run_test(test_bubble_sort);
-//  mu_run_test(test_merge_sort);
+  mu_run_test(test_merge_sort);
   return NULL;
 }
 
