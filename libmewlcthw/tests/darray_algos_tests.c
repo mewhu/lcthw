@@ -14,13 +14,14 @@ int testcmp(char **a, char **b)
 
 // [Mew version] remain "const void *" format in parameter
 // [explanation] The importance is that comparison function takes
-//               pointers to the elements you want to compare in
-//               the original array.
-//           ==> pointer a_ptr to the ELEMENT : ELEMENT *a_ptr; 
-//           ==> if ELEMENT is string(i.e. char *), then ~
-//           ==> char* *a_ptr --> char **a_ptr
+//               pointers to the elements in the original array you want to compare.
+//           ==> "pointer a_ptr to the ELEMENT" is denoted as : ELEMENT *a_ptr;
+//           ==> if now the ELEMENT is a string(i.e. char *), then ~
+//           ==> the formula "ELEMENT *a_ptr" would be translated to ~
+//           ==>               "char* *a_ptr" 
+//           ==>           --> "char **a_ptr"
 //           ==> so you should do the proper type cast (char **) 
-//               before you dereference inside comparison function 
+//               before you dereference it inside the comparison function
 int testcmp(const void *a, const void *b) {
   return strcmp( *(char **)a, *(char **)b );
 }
