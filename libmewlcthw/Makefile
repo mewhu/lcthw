@@ -31,11 +31,15 @@ build:
 
 # The Unit Tests
 .PHONY: tests
-tests: $(TESTS)
+tests: prepare_tests_list $(TESTS)
 	sh ./tests/runtests.sh
+
+prepare_tests_list:
+	rm -f ./tests/*_tests_marked
 
 $(TESTS):
 	gcc ${CFLAGS} $@.c ${TARGET} -ldl -o $@
+	touch $@_marked
 
 valgrind:
 	VALGRIND="valgrind --log-file=/tmp/valgrind-%p.log" $(MAKE)
@@ -45,6 +49,7 @@ clean:
 	rm -rf build $(OBJECTS) $(TESTS)
 	rm -f tests/tests.log
 	rm -f tests/*_tests
+	rm -f tests/*_tests_marked
 	find . -name "*.gc*" -exec rm {} \;
 	rm -rf `find . -name "*.dSYM" -print`
 
